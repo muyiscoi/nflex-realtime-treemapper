@@ -1,8 +1,8 @@
 import jinja2
 from jinja2 import Template
 
-def get_color(value, max=100):
-    return "hsl({},50%,50%)".format((1 - value/max) * 120)
+def get_color(value, max=100, alpha=1.0):
+    return "hsla({},50%,50%,{})".format((1 - value/max) * 120, alpha)
 
 """Render stuff"""
 def render_block(data):
@@ -14,12 +14,12 @@ def render_block(data):
         <div class="application__body">
             <div class="treemap">
                 {% for item in data['children'] %}
-                <div class="application__item" style="background-color: {{get_color(item.value)}}">
+                <div class="application__item" style="background-color: {{get_color(item.value, 100, 0.5)}}">
                   <span class="name">{{item.name}}</span>
                   <span class="stats">{{item.label}}: {{item.value}}%</span>
                   <div class="application__children">
                         {% for child in item['children'] %}
-                            <div class="application__item-child"  style="background-color: {{get_color(child.value)}}">
+                            <div class="application__item-child"  style="background-color: {{get_color(child.value, 100, 1.0)}}">
                                 <div class="application__item-child-name">{{child.label}}</div>
                                 <span class="stats">{{child.value}}%</span>
                             </div>
@@ -80,8 +80,8 @@ def render_style():
         }
 
         .application__item-child {
-            border: 1px solid #000;
-            width: 33%;
+            margin: 2px;
+            width: 31%;
             float: left;
             padding: 4px;
         }
