@@ -84,10 +84,10 @@ def get(event, context):
                          rule.get('rule'),
                          start,
                          end)
-        datasets += {
+        datasets.append({
             'application_name': app_name,
             'children': data
-        }
+        })
     table = render(datasets)
     return {
         "html": table
