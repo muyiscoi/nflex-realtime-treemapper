@@ -76,19 +76,19 @@ def get_data(context, app_name, rule, start, end):
 def get(event, context):
     end = datetime.utcnow()
     start = end - timedelta(minutes=10)
-    data = []
+    datasets = []
     for rule in RULES:
         app_name = rule.get("application")
-        data += get_data(context,
+        data = get_data(context,
                          app_name,
                          rule.get('rule'),
                          start,
                          end)
-
-    table = render({
-        'application_name': app_name,
-        'children': data
-    })
+        datasets += {
+            'application_name': app_name,
+            'children': data
+        }
+    table = render(datasets)
     return {
         "html": table
     }
