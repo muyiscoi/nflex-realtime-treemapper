@@ -14,12 +14,12 @@ def render_block(data):
         <div class="application__body">
             <div class="treemap">
                 {% for item in data['children'] %}
-                <div class="application__item" style="background-color: {{get_color(item.value, 100, 0.5)}}">
+                <div class="application__item" style="background-color: {{get_color(item.value, item.max_value, 0.5)}}">
                   <span class="name">{{item.name}}</span>
                   <span class="stats">{{item.label}}: {{item.value}}%</span>
                   <div class="application__children">
                         {% for child in item['children'] %}
-                            <div class="application__item-child"  style="background-color: {{get_color(child.value, 100, 1.0)}}">
+                            <div class="application__item-child"  style="background-color: {{get_color(child.value, child.max_value, 1.0)}}">
                                 <div class="application__item-child-name">{{child.label}}</div>
                                 <span class="stats">{{child.value}}%</span>
                             </div>
