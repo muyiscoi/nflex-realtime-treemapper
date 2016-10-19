@@ -37,13 +37,14 @@ def get(event, context):
     current = get_current_metrics(context,
                                   resource_ids,
                                   rule['metric'])
-    data = {}
+    data = []
     """
     r = {'name':'', 'label':'', 'value': '', 'unit':'',
         children: list(m)}
     """
     for resource_id, point in current.items():
-        data[resource_id] = r = {}
+        r = {}
+        r['id'] = resource_id
         r['name'] = resource_names[resource_id]
         r['label'] = rule['metric']
         r['value']  = point['value']
@@ -66,5 +67,6 @@ def get(event, context):
             r['children'] = sorted(r['children'],
                                     key=operator.itemgetter('value'),
                                     reverse=True)
+        data.append(r)
 
     return data
