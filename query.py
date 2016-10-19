@@ -17,6 +17,15 @@ def get_metrics(context,
     return resp.json()
 
 
+def get_current_metrics(context, resource_ids, metric):
+    params = {
+        "resources": ",".join(resource_ids)
+    }
+    url = '/metrics/%s/current' % metric
+    resp = context.api.get(url, params=params)
+    return resp.json()
+
+
 def fmt_date(date):
     return datetime.strftime(date, "%Y-%m-%dT%H:%M:%S.%fZ")
 
