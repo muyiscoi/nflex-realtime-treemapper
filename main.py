@@ -30,26 +30,19 @@ def get(event, context):
     rule = RULE["rule"]
     data = {}
     resource_ids = [r['id'] for r in resources]
-    resource_names = {
-        r['id']: r['base']['name']
-        for r in resources
-    }
-
+    resource_names = {r['id']: r['base']['name'] for r in resources}
     current = get_current_metrics(context,
                                   resource_ids,
                                   rule['metric'])
     data = []
-    """
-    r = {'name':'', 'label':'', 'value': '', 'unit':'',
-        children: list(m)}
-    """
     for resource_id, point in current.items():
-        r = {}
-        r['id'] = resource_id
-        r['name'] = resource_names[resource_id]
-        r['label'] = rule['metric']
-        r['value']  = round(point['value'], 2)
-        r['unit']  = point['unit']
+        r = {
+            'id': resource_id,
+            'name': resource_names[resource_id],
+            'label': rule['metric'],
+            'value': round(point['value'], 2),
+            'unit': point['unit'],
+        }
         if point['value'] > rule['value']:
             child_metrics = get_metrics(context,
                                         resource_id,
@@ -70,7 +63,7 @@ def get(event, context):
                                    reverse=True)[:5]
         data.append(r)
 
-    table = render({ 'application_name': name, 'children': data})
+    table = render({'application_name': name, 'children': data})
     return {
         "html": table
     }
