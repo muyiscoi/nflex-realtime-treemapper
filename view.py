@@ -15,17 +15,18 @@ def render_block(data):
             <div class="treemap">
                 {% for item in data['children'] %}
                 <div class="application__item" style="background-color: {{get_color(item.value, item.max_value, 0.5)}}">
-                  <span class="name">{{item.name}}</span>
-                  <span class="stats">{{item.label}}: {{item.value}}%</span>
-                  <div class="application__children">
-                        {% for child in item['children'] %}
-                            <div class="application__item-child"  style="background-color: {{get_color(child.value, child.max_value, 1.0)}}">
-                                <div class="application__item-child-name">{{child.label}}</div>
-                                <span class="stats">{{child.value}}%</span>
-                            </div>
-                        {% endfor%}
-                  </div>
-
+                    <a class="application_item-link" href="/cmp/resources/#resources/{{item.id}}/performance">
+                        <span class="name">{{item.name}}</span>
+                        <span class="stats">{{item.label}}: {{item.value}}%</span>
+                        <div class="application__children">
+                            {% for child in item['children'] %}
+                                <div class="application__item-child"  style="background-color: {{get_color(child.value, child.max_value, 1.0)}}">
+                                    <div class="application__item-child-name">{{child.label}}</div>
+                                    <span class="stats">{{child.value}}%</span>
+                                </div>
+                            {% endfor%}
+                        </div>
+                    </a>
                 </div>
                 {% endfor%}
             </div>
@@ -78,7 +79,10 @@ def render_style():
           width: 100%;
           padding: 8px;
         }
-
+        .application_item-link {
+          color: #fff;
+          text-decoration: none;
+        }
         .application__item-child {
             margin: 2px;
             width: 31%;
@@ -112,132 +116,388 @@ def render(datasets):
 
 
 def test_render():
-    data = { 'application_name': 'Glen'}
-    items = [
-        {
-            "unit": "percent",
-            "label": "cpu-usage",
-            "id": "b5fccd6e-60d4-4301-b98f-9d55e6bcd6da",
-            "value": 2,
-            "name": "cmp-ct-master"
-        },
-        {
-            "unit": "percent",
-            "label": "cpu-usage",
-            "id": "edd55db3-fe2b-4726-a919-2b5aa18d6d3d",
-            "value": 0.7,
-            "name": "cmp-ct-flex3"
-        },
-        {
-            "name": "cmp-ct-services2",
-            "value": 10.68,
-            "label": "cpu-usage",
-            "id": "4ba0941f-df88-427b-ac59-6e509154f8b8",
-            "children": [],
-            "unit": "percent"
-        },
-        {
-            "name": "cmp-ct-backup",
-            "value": 10.2,
-            "label": "cpu-usage",
-            "id": "e9f9e8eb-48d7-4451-a563-e04a44d1c5b9",
-            "children": [],
-            "unit": "percent"
-        },
-        {
-            "unit": "percent",
-            "label": "cpu-usage",
-            "id": "024d3b4e-1338-4b45-bf7f-3ddaf667e51c",
-            "value": 1.1,
-            "name": "cmp-ct-flex1"
-        },
-        {
-            "unit": "percent",
-            "label": "cpu-usage",
-            "id": "5e563725-2069-43ba-92c8-68d4f8bad246",
-            "value": 0.4,
-            "name": "cmp-ct-wp"
-        },
-        {
-            "unit": "percent",
-            "label": "cpu-usage",
-            "id": "b9c849c4-5413-4727-9861-46a06d6944cd",
-            "value": 0.4,
-            "name": "cmp-ct-flex4"
-        },
-        {
-            "name": "cmp-ct-containers2",
-            "value": 20.36,
-            "label": "cpu-usage",
-            "id": "21bd79e3-cbbf-41f2-94ee-e278da3078b4",
-            "children": [
-                {
-                    "value": 72.26,
-                    "name": "cmp-ct-containers2",
-                    "unit": "percent",
-                    "label": "Docker CPU usage [Trident]"
-                },
-                {
-                    "value": 68.9,
-                    "name": "cmp-ct-containers2",
-                    "unit": "percent",
-                    "label": "Docker CPU usage [Glass]"
-                },
-                {
-                    "value": 38.2,
-                    "name": "cmp-ct-containers2",
-                    "unit": "percent",
-                    "label": "Docker CPU usage [Babel]"
-                },
-                {
-                    "value": 34.05,
-                    "name": "cmp-ct-containers2",
-                    "unit": "percent",
-                    "label": "Docker CPU usage [SparkCustomerApi]"
-                },
-                {
-                    "value": 30.58,
-                    "name": "cmp-ct-containers2",
-                    "unit": "percent",
-                    "label": "Docker CPU usage [InfluxdbAdapter2]"
-                }
-            ],
-            "unit": "percent"
-        },
-        {
-            "unit": "percent",
-            "label": "cpu-usage",
-            "id": "1a6144fe-4860-4c0b-9679-dc5d1d901db1",
-            "value": 6.35,
-            "name": "cmp-ct-services3"
-        },
-        {
-            "unit": "percent",
-            "label": "cpu-usage",
-            "id": "7e938cef-5bdf-49df-b36b-9aecfa99c1ac",
-            "value": 7.61,
-            "name": "cmp-ct-services1"
-        },
-        {
-            "unit": "percent",
-            "label": "cpu-usage",
-            "id": "063511d7-6ae6-4949-bfdf-4c96ae951381",
-            "value": 0.4,
-            "name": "cmp-ct-flex2"
-        },
-        {
-            "name": "cmp-ct-containers1",
-            "value": 14.86,
-            "label": "cpu-usage",
-            "id": "4c012732-cd1f-421f-95b5-6a873953a873",
-            "children": [],
-            "unit": "percent"
-        }
-    ]
+    data = [{
+        "application_name": "CMP (Core)",
+        "children": [
+            {
+                "name": "cmp-ct-services2",
+                "max_value": 400,
+                "children": [
+                    {
+                        "max_value": 400,
+                        "unit": "percent",
+                        "name": "cmp-ct-services2",
+                        "value": 282.69,
+                        "label": "Docker CPU usage [ElasticSearch]"
+                    },
+                    {
+                        "max_value": 400,
+                        "unit": "percent",
+                        "name": "cmp-ct-services2",
+                        "value": 134.23,
+                        "label": "Docker CPU usage [PostgresGovernor]"
+                    },
+                    {
+                        "max_value": 400,
+                        "unit": "percent",
+                        "name": "cmp-ct-services2",
+                        "value": 78.01,
+                        "label": "Docker CPU usage [Kafka]"
+                    },
+                    {
+                        "max_value": 400,
+                        "unit": "percent",
+                        "name": "cmp-ct-services2",
+                        "value": 17.72,
+                        "label": "Docker CPU usage [Redis]"
+                    },
+                    {
+                        "max_value": 400,
+                        "unit": "percent",
+                        "name": "cmp-ct-services2",
+                        "value": 3.86,
+                        "label": "Docker CPU usage [InfluxDB]"
+                    }
+                ],
+                "value": 10.22,
+                "label": "cpu-usage",
+                "id": "4ba0941f-df88-427b-ac59-6e509154f8b8",
+                "unit": "percent"
+            },
+            {
+                "name": "cmp-ct-backup",
+                "max_value": 400,
+                "children": [],
+                "value": 10.2,
+                "label": "cpu-usage",
+                "id": "e9f9e8eb-48d7-4451-a563-e04a44d1c5b9",
+                "unit": "percent"
+            },
+            {
+                "name": "cmp-ct-containers2",
+                "max_value": 400,
+                "children": [
+                    {
+                        "max_value": 400,
+                        "unit": "percent",
+                        "name": "cmp-ct-containers2",
+                        "value": 67.28,
+                        "label": "Docker CPU usage [Glass]"
+                    },
+                    {
+                        "max_value": 400,
+                        "unit": "percent",
+                        "name": "cmp-ct-containers2",
+                        "value": 49.84,
+                        "label": "Docker CPU usage [Trident]"
+                    },
+                    {
+                        "max_value": 400,
+                        "unit": "percent",
+                        "name": "cmp-ct-containers2",
+                        "value": 32.64,
+                        "label": "Docker CPU usage [Babel]"
+                    },
+                    {
+                        "max_value": 400,
+                        "unit": "percent",
+                        "name": "cmp-ct-containers2",
+                        "value": 31.15,
+                        "label": "Docker CPU usage [SparkCustomerApi]"
+                    },
+                    {
+                        "max_value": 400,
+                        "unit": "percent",
+                        "name": "cmp-ct-containers2",
+                        "value": 25.67,
+                        "label": "Docker CPU usage [InfluxdbAdapter2]"
+                    }
+                ],
+                "value": 22.59,
+                "label": "cpu-usage",
+                "id": "21bd79e3-cbbf-41f2-94ee-e278da3078b4",
+                "unit": "percent"
+            },
+            {
+                "name": "cmp-ct-containers1",
+                "max_value": 400,
+                "children": [
+                    {
+                        "max_value": 400,
+                        "unit": "percent",
+                        "name": "cmp-ct-containers1",
+                        "value": 150.56,
+                        "label": "Docker CPU usage [Petros]"
+                    },
+                    {
+                        "max_value": 400,
+                        "unit": "percent",
+                        "name": "cmp-ct-containers1",
+                        "value": 63.25,
+                        "label": "Docker CPU usage [Trident]"
+                    },
+                    {
+                        "max_value": 400,
+                        "unit": "percent",
+                        "name": "cmp-ct-containers1",
+                        "value": 29.55,
+                        "label": "Docker CPU usage [InfluxdbAdapter3]"
+                    },
+                    {
+                        "max_value": 400,
+                        "unit": "percent",
+                        "name": "cmp-ct-containers1",
+                        "value": 28.96,
+                        "label": "Docker CPU usage [InfluxdbAdapter1]"
+                    },
+                    {
+                        "max_value": 400,
+                        "unit": "percent",
+                        "name": "cmp-ct-containers1",
+                        "value": 18.3,
+                        "label": "Docker CPU usage [BabelAsyncTasks]"
+                    }
+                ],
+                "value": 16.76,
+                "label": "cpu-usage",
+                "id": "4c012732-cd1f-421f-95b5-6a873953a873",
+                "unit": "percent"
+            }
+        ]
+    },
+    {
+        "application_name": "CMP (Core)",
+        "children": [
+            {
+                "name": "cmp-ct-services2",
+                "max_value": 100,
+                "children": [
+                    {
+                        "max_value": 100,
+                        "unit": "percent",
+                        "name": "cmp-ct-services2",
+                        "value": 48.05,
+                        "label": "Docker Memory usage [Kafka]"
+                    },
+                    {
+                        "max_value": 100,
+                        "unit": "percent",
+                        "name": "cmp-ct-services2",
+                        "value": 24.85,
+                        "label": "Docker Memory usage [ElasticSearch]"
+                    },
+                    {
+                        "max_value": 100,
+                        "unit": "percent",
+                        "name": "cmp-ct-services2",
+                        "value": 5.74,
+                        "label": "Docker Memory usage [Mongo]"
+                    },
+                    {
+                        "max_value": 100,
+                        "unit": "percent",
+                        "name": "cmp-ct-services2",
+                        "value": 2.59,
+                        "label": "Docker Memory usage [SX]"
+                    },
+                    {
+                        "max_value": 100,
+                        "unit": "percent",
+                        "name": "cmp-ct-services2",
+                        "value": 2.35,
+                        "label": "Docker Memory usage [PostgresGovernor]"
+                    }
+                ],
+                "value": 41.62,
+                "label": "memory-usage",
+                "id": "4ba0941f-df88-427b-ac59-6e509154f8b8",
+                "unit": "percent"
+            },
+            {
+                "name": "cmp-ct-containers2",
+                "max_value": 100,
+                "children": [
+                    {
+                        "max_value": 100,
+                        "unit": "percent",
+                        "name": "cmp-ct-containers2",
+                        "value": 24.01,
+                        "label": "Docker Memory usage [Glass]"
+                    },
+                    {
+                        "max_value": 100,
+                        "unit": "percent",
+                        "name": "cmp-ct-containers2",
+                        "value": 6.27,
+                        "label": "Docker Memory usage [Babel]"
+                    },
+                    {
+                        "max_value": 100,
+                        "unit": "percent",
+                        "name": "cmp-ct-containers2",
+                        "value": 2.48,
+                        "label": "Docker Memory usage [BabelAsyncTasks]"
+                    },
+                    {
+                        "max_value": 100,
+                        "unit": "percent",
+                        "name": "cmp-ct-containers2",
+                        "value": 2.13,
+                        "label": "Docker Memory usage [Petros]"
+                    },
+                    {
+                        "max_value": 100,
+                        "unit": "percent",
+                        "name": "cmp-ct-containers2",
+                        "value": 2.08,
+                        "label": "Docker Memory usage [Trident]"
+                    }
+                ],
+                "value": 41.94,
+                "label": "memory-usage",
+                "id": "21bd79e3-cbbf-41f2-94ee-e278da3078b4",
+                "unit": "percent"
+            },
+            {
+                "name": "cmp-ct-services3",
+                "max_value": 100,
+                "children": [
+                    {
+                        "max_value": 100,
+                        "unit": "percent",
+                        "name": "cmp-ct-services3",
+                        "value": 46.93,
+                        "label": "Docker Memory usage [Kafka]"
+                    },
+                    {
+                        "max_value": 100,
+                        "unit": "percent",
+                        "name": "cmp-ct-services3",
+                        "value": 32.25,
+                        "label": "Docker Memory usage [ElasticSearch]"
+                    },
+                    {
+                        "max_value": 100,
+                        "unit": "percent",
+                        "name": "cmp-ct-services3",
+                        "value": 5.01,
+                        "label": "Docker Memory usage [Mongo]"
+                    },
+                    {
+                        "max_value": 100,
+                        "unit": "percent",
+                        "name": "cmp-ct-services3",
+                        "value": 2.39,
+                        "label": "Docker Memory usage [SX]"
+                    },
+                    {
+                        "max_value": 100,
+                        "unit": "percent",
+                        "name": "cmp-ct-services3",
+                        "value": 2.01,
+                        "label": "Docker Memory usage [InfluxDB]"
+                    }
+                ],
+                "value": 45.37,
+                "label": "memory-usage",
+                "id": "1a6144fe-4860-4c0b-9679-dc5d1d901db1",
+                "unit": "percent"
+            },
+            {
+                "name": "cmp-ct-services1",
+                "max_value": 100,
+                "children": [
+                    {
+                        "max_value": 100,
+                        "unit": "percent",
+                        "name": "cmp-ct-services1",
+                        "value": 51.15,
+                        "label": "Docker Memory usage [Kafka]"
+                    },
+                    {
+                        "max_value": 100,
+                        "unit": "percent",
+                        "name": "cmp-ct-services1",
+                        "value": 27.11,
+                        "label": "Docker Memory usage [ElasticSearch]"
+                    },
+                    {
+                        "max_value": 100,
+                        "unit": "percent",
+                        "name": "cmp-ct-services1",
+                        "value": 4.92,
+                        "label": "Docker Memory usage [Mongo]"
+                    },
+                    {
+                        "max_value": 100,
+                        "unit": "percent",
+                        "name": "cmp-ct-services1",
+                        "value": 2.46,
+                        "label": "Docker Memory usage [SX]"
+                    },
+                    {
+                        "max_value": 100,
+                        "unit": "percent",
+                        "name": "cmp-ct-services1",
+                        "value": 2.44,
+                        "label": "Docker Memory usage [PostgresGovernor]"
+                    }
+                ],
+                "value": 38.67,
+                "label": "memory-usage",
+                "id": "7e938cef-5bdf-49df-b36b-9aecfa99c1ac",
+                "unit": "percent"
+            },
+            {
+                "name": "cmp-ct-containers1",
+                "max_value": 100,
+                "children": [
+                    {
+                        "max_value": 100,
+                        "unit": "percent",
+                        "name": "cmp-ct-containers1",
+                        "value": 6.2,
+                        "label": "Docker Memory usage [Babel]"
+                    },
+                    {
+                        "max_value": 100,
+                        "unit": "percent",
+                        "name": "cmp-ct-containers1",
+                        "value": 2.41,
+                        "label": "Docker Memory usage [Petros]"
+                    },
+                    {
+                        "max_value": 100,
+                        "unit": "percent",
+                        "name": "cmp-ct-containers1",
+                        "value": 2.39,
+                        "label": "Docker Memory usage [BabelAsyncTasks]"
+                    },
+                    {
+                        "max_value": 100,
+                        "unit": "percent",
+                        "name": "cmp-ct-containers1",
+                        "value": 2.37,
+                        "label": "Docker Memory usage [Glass]"
+                    },
+                    {
+                        "max_value": 100,
+                        "unit": "percent",
+                        "name": "cmp-ct-containers1",
+                        "value": 2.04,
+                        "label": "Docker Memory usage [Trident]"
+                    }
+                ],
+                "value": 42.4,
+                "label": "memory-usage",
+                "id": "4c012732-cd1f-421f-95b5-6a873953a873",
+                "unit": "percent"
+            }
+        ]
+    }]
 
-    data['children'] = items;
     print(data)
-    return render([data, data])
+    return render(data)
 
 
 
