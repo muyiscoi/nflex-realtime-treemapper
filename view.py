@@ -20,7 +20,6 @@ def render(data):
 
         .application {
           padding: 5px;
-          border: 1px solid #fff;
         }
 
         .application_header {
@@ -39,14 +38,22 @@ def render(data):
           float: left;
           clear: both;
           width: 100%;
-          padding: 5px;
+          padding: 8px;
         }
 
         .application__item-child {
             border: 1px solid #000;
-            width: 25%;
+            width: 33%;
             float: left;
-            padding: 5px;
+            padding: 4px;
+        }
+
+        .application__item-child-name {
+            min-width: 96%;
+            max-width: 96%;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
         }
     </style>
     <div class="application clearfix">
@@ -58,12 +65,12 @@ def render(data):
                 {% for item in data['children'] %}
                 <div class="application__item" style="background-color: {{get_color(item.value)}}">
                   <span class="name">{{item.name}}</span>
-                  <span class="stats">{{item.label}}: {{item.value}} {{item.unit}}</span>
+                  <span class="stats">{{item.label}}: {{item.value}}%</span>
                   <div class="application__children">
                         {% for child in item['children'] %}
                             <div class="application__item-child"  style="background-color: {{get_color(child.value)}}">
-                                <span class="name">{{child.name}}</span>
-                                <span class="stats">{{child.label}}: {{child.value}} {{child.unit}}</span>
+                                <div class="application__item-child-name">{{child.label}}</div>
+                                <span class="stats">{{child.value}}%</span>
                             </div>
                         {% endfor%}
                   </div>
@@ -206,7 +213,8 @@ def test_render():
     print(data)
     return render(data)
 
-#Will only run if you make this the main nflex module file.
+
+
 def get(event, context):
 
     table = test_render()
