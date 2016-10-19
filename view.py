@@ -1,14 +1,14 @@
 from jinja2 import Template
 
 e = jinja2.Environment()
-    e.globals['get_color'] = get_color
-    t = e.from_string(HEATMAP_TEMPLATE)
-    return {
-        'html': t.render(**{
-            'heatmap': heatmap,
-            'max_instances': max_instances
-        })
-    }
+e.globals['get_color'] = get_color
+t = e.from_string(HEATMAP_TEMPLATE)
+return {
+    'html': t.render(**{
+        'heatmap': heatmap,
+        'max_instances': max_instances
+    })
+}
 
 def get_color(value, max):
     return "hsl({},50%,50%)".format((1 - value/max) * 120)
