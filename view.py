@@ -1,10 +1,12 @@
+import jinja2
 from jinja2 import Template
+
+def get_color(value, max=100):
+    return "hsl({},50%,50%)".format((1 - value/max) * 120)
+
 
 e = jinja2.Environment()
 e.globals['get_color'] = get_color
-
-def get_color(value, max):
-    return "hsl({},50%,50%)".format((1 - value/max) * 120)
 
 """Render stuff"""
 def render(data):
@@ -47,7 +49,7 @@ def render(data):
         <div class="application__body">
             <div class="treemap">
                 {% for item in data['children'] %}
-                <div class="application__item" style="background-color: {{get_color(item.value)}}>
+                <div class="application__item" style="background-color: {{get_color(item.value)}}">
                   <span class="name">{{item.name}}</span>
                   <span class="stats">{{item.label}}: {{item.value}} {{item.unit}}</span>
                 </div>
@@ -57,7 +59,7 @@ def render(data):
     </div>
     """
 
-    template = Template(template_str);
+    template = e.from_string(template_str);
     return template.render(data=data);
 
 def test_render():
@@ -67,14 +69,11 @@ def test_render():
     for i in range(10):
         item = {
             'name': 'item %d' % i,
-            'colour': 'red',
-            'metric': {
-                'name': metric,
-                'value': '%d' % (10 * i)
-            }
+            'label': metric,
+            'value': (10.0 * i)
         }
         items.append(item)
 
-    data['items'] = items;
+    data['children'] = items;
     print(data)
     return render(data)
