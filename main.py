@@ -25,6 +25,7 @@ RULES = [
             "type": "threshold",
             "metric": "memory-usage",
             "value": 10,
+            "max_value": 100,
             "child_metric": "docker-memory-usage.*",
         }
     },
@@ -43,14 +44,18 @@ def get_data(context, app_name, rule, start, end):
                                   resource_ids,
                                   rule['metric'])
     data = []
+    max_value = rule.get('max_value')
     for resource_id, point in current.items():
+        if not max_value:
+            max_value = 100 * resource_cores[resource_id]
+
         r = {
             'id': resource_id,
             'name': resource_names[resource_id],
             'label': rule['metric'],
             'value': round(point['value'], 2),
             'unit': point['unit'],
-            'max_value': 100 * resource_cores[resource_id],
+            'max_value': max_value,
         }
         if point['value'] > rule['value']:
             child_metrics = get_metrics(context,
@@ -65,7 +70,7 @@ def get_data(context, app_name, rule, start, end):
                     'label': m['label'],
                     'unit': m['unit'],
                     'value': round(m['values'][-1]['value'], 2),
-                    'max_value': 100 * resource_cores[resource_id],
+                    'max_value': max_value,
                 })
 
             r['children'] = sorted(r['children'],
