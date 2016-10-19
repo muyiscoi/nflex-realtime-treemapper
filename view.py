@@ -108,7 +108,7 @@ def render(datasets):
     {% endfor %}
     """
     template = e.from_string(template_str);
-    return template.render(datasets=datasets);
+    return render_style() + template.render(datasets=datasets);
 
 
 def test_render():
@@ -237,7 +237,7 @@ def test_render():
 
     data['children'] = items;
     print(data)
-    return render_style() + render([data, data])
+    return render([data, data])
 
 
 
