@@ -75,7 +75,7 @@ def get_data(context, app_name, rule, start, end):
 
 def get(event, context):
     end = datetime.utcnow()
-    start = end - timedelta(minutes=5)
+    start = end - timedelta(minutes=10)
     data = []
     for rule in RULES:
         app_name = rule.get("application")
