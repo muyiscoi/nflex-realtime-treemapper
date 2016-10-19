@@ -4,14 +4,52 @@ from jinja2 import Template
 def get_color(value, max=100):
     return "hsl({},50%,50%)".format((1 - value/max) * 120)
 
+"""Render stuff"""
+def render_block(data):
+    template_str = """
+    <div class="application clearfix">
+        <div class="application__header">
+          <span class="title">{{data.application_name}}</span>
+        </div>
+        <div class="application__body">
+            <div class="treemap">
+                {% for item in data['children'] %}
+                <div class="application__item" style="background-color: {{get_color(item.value)}}">
+                  <span class="name">{{item.name}}</span>
+                  <span class="stats">{{item.label}}: {{item.value}}%</span>
+                  <div class="application__children">
+                        {% for child in item['children'] %}
+                            <div class="application__item-child"  style="background-color: {{get_color(child.value)}}">
+                                <div class="application__item-child-name">{{child.label}}</div>
+                                <span class="stats">{{child.value}}%</span>
+                            </div>
+                        {% endfor%}
+                  </div>
+
+                </div>
+                {% endfor%}
+            </div>
+        </div>
+    </div>
+    """
+
+    template = e.from_string(template_str);
+    return template.render(data=data);
 
 e = jinja2.Environment()
 e.globals['get_color'] = get_color
+e.globals['render_block'] = render_block
 
-"""Render stuff"""
-def render(data):
-    template_str = """<!-- Table of the 10 servers with most CPU -->
+def render_style():
+    template_str = """
+    <!-- Table of the 10 servers with most CPU -->
     <style>
+        .metric_block {
+            margin: 5px;
+            float: left;
+            width: 48%;
+        }
+
         .clearfix:after {
           content: "";
           display: table;
@@ -56,34 +94,22 @@ def render(data):
             overflow: hidden;
         }
     </style>
-    <div class="application clearfix">
-        <div class="application__header">
-          <span class="title">{{data.application_name}}</span>
-        </div>
-        <div class="application__body">
-            <div class="treemap">
-                {% for item in data['children'] %}
-                <div class="application__item" style="background-color: {{get_color(item.value)}}">
-                  <span class="name">{{item.name}}</span>
-                  <span class="stats">{{item.label}}: {{item.value}}%</span>
-                  <div class="application__children">
-                        {% for child in item['children'] %}
-                            <div class="application__item-child"  style="background-color: {{get_color(child.value)}}">
-                                <div class="application__item-child-name">{{child.label}}</div>
-                                <span class="stats">{{child.value}}%</span>
-                            </div>
-                        {% endfor%}
-                  </div>
-
-                </div>
-                {% endfor%}
-            </div>
-        </div>
-    </div>
     """
-
     template = e.from_string(template_str);
-    return template.render(data=data);
+    return template.render();
+
+
+def render(datasets):
+    template_str = """
+    {% for data in datasets %}
+    <div class="metric_block">
+        {{ render_block(data) }}
+    </div>
+    {% endfor %}
+    """
+    template = e.from_string(template_str);
+    return template.render(datasets=datasets);
+
 
 def test_render():
     data = { 'application_name': 'Glen'}
@@ -211,7 +237,7 @@ def test_render():
 
     data['children'] = items;
     print(data)
-    return render(data)
+    return render_style() + render([data, data])
 
 
 
