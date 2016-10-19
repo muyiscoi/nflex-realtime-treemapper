@@ -6,6 +6,7 @@ from query import (
 )
 import operator
 import re
+from view import render
 
 
 RULE = {
@@ -69,4 +70,7 @@ def get(event, context):
                                     reverse=True)
         data.append(r)
 
-    return data
+    table = render({ 'application_name': name, 'children': data})
+    return {
+        "html": table
+    }
