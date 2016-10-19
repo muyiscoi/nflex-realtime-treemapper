@@ -47,7 +47,7 @@ def get(event, context):
         r['id'] = resource_id
         r['name'] = resource_names[resource_id]
         r['label'] = rule['metric']
-        r['value']  = point['value']
+        r['value']  = round(point['value'], 2)
         r['unit']  = point['unit']
         if point['value'] > rule['value']:
             child_metrics = get_metrics(context,
@@ -61,12 +61,12 @@ def get(event, context):
                     'name': r['name'],
                     'label': m['label'],
                     'unit': m['unit'],
-                    'value': m['values'][-1]['value']
+                    'value': round(m['values'][-1]['value'], 2)
                 })
 
             r['children'] = sorted(r['children'],
-                                    key=operator.itemgetter('value'),
-                                    reverse=True)
+                                   key=operator.itemgetter('value'),
+                                   reverse=True)[:5]
         data.append(r)
 
     return data
