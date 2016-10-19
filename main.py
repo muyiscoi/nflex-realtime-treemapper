@@ -9,25 +9,31 @@ import re
 from view import render
 
 
-RULE = {
-    "application": "CMP (Core)",
-    "rule": {
-        "type": "threshold",
-        "metric": "cpu-usage",
-        "value": 10,
-        "child_metric": "docker-cpu-usage.*",
-    }
-}
+RULES = [
+    {
+        "application": "CMP (Core)",
+        "rule": {
+            "type": "threshold",
+            "metric": "cpu-usage",
+            "value": 10,
+            "child_metric": "docker-cpu-usage.*",
+        }
+    },
+    {
+        "application": "CMP (Core)",
+        "rule": {
+            "type": "threshold",
+            "metric": "memory-usage",
+            "value": 50,
+            "child_metric": "docker-memory-usage.*",
+        }
+    },
+]
 
 
-def get(event, context):
-    end = datetime.utcnow()
-    start = end - timedelta(minutes=5)
-
-    name = RULE.get("application")
-    name = re.sub(r'([()])', r'\\\1', name)
+def get_data(context, app_name, rule, start, end):
+    name = re.sub(r'([()])', r'\\\1', app_name)
     resources = get_resources_for_application(context, name)
-    rule = RULE["rule"]
     data = {}
     resource_ids = [r['id'] for r in resources]
     resource_names = {r['id']: r['base']['name'] for r in resources}
@@ -61,9 +67,28 @@ def get(event, context):
             r['children'] = sorted(r['children'],
                                    key=operator.itemgetter('value'),
                                    reverse=True)[:5]
-        data.append(r)
 
-    table = render({'application_name': name, 'children': data})
+            data.append(r)
+
+    return data
+
+
+def get(event, context):
+    end = datetime.utcnow()
+    start = end - timedelta(minutes=5)
+    data = []
+    for rule in RULES:
+        app_name = rule.get("application")
+        data += get_data(context,
+                         app_name,
+                         rule.get('rule'),
+                         start,
+                         end)
+
+    table = render({
+        'application_name': app_name,
+        'children': data
+    })
     return {
         "html": table
     }
