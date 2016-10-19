@@ -1,11 +1,12 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 
 
-def get_metrics(metrics, context):
-    end = datetime.utcnow()
-    start = end - timedelta(minutes=5)
-    resource_id = "2d16ab4e-68c5-449b-9608-7c67c570dac1"
-    metric = "cpu-usage"
+def get_metrics(context,
+                resource_id,
+                metric,
+                start,
+                end,
+                downsampling="mean"):
     params = {
         "start": fmt_date(start),
         "end": fmt_date(end),
