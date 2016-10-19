@@ -23,7 +23,7 @@ def fmt_date(date):
     Pass in an id for an application to get the list of
     resources that are part of this application
 """
-def get_resources_for_application(id):
+def get_resources_for_application(context, id):
     url = '/query';
 
     json = {
@@ -44,3 +44,13 @@ def get_resources_for_application(id):
     response = context.api.post(url, json)
     #print(response.json())
     return response.json()["items"]
+
+def get_metrics_for_application(context, id, metric, start, end):
+
+    resources = get_resources_for_application(context, id)
+    resource_metrics = []
+    for resource in resources:
+        resource_metric = get_metrics(context, resource['id'], metric, start, end)
+        resource_metrics.append(resource_metric)
+
+    return resource_metrics
