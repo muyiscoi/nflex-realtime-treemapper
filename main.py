@@ -37,6 +37,8 @@ def get_data(context, app_name, rule, start, end):
     data = {}
     resource_ids = [r['id'] for r in resources]
     resource_names = {r['id']: r['base']['name'] for r in resources}
+    resource_cores = {r['id']: r['details']['server']['cpu_cores']
+                      for r in resources}
     current = get_current_metrics(context,
                                   resource_ids,
                                   rule['metric'])
@@ -48,6 +50,7 @@ def get_data(context, app_name, rule, start, end):
             'label': rule['metric'],
             'value': round(point['value'], 2),
             'unit': point['unit'],
+            'max_value': 100 * resource_cores[resource_id],
         }
         if point['value'] > rule['value']:
             child_metrics = get_metrics(context,
@@ -61,7 +64,8 @@ def get_data(context, app_name, rule, start, end):
                     'name': r['name'],
                     'label': m['label'],
                     'unit': m['unit'],
-                    'value': round(m['values'][-1]['value'], 2)
+                    'value': round(m['values'][-1]['value'], 2),
+                    'max_value': 100 * resource_cores[resource_id],
                 })
 
             r['children'] = sorted(r['children'],
@@ -80,14 +84,15 @@ def get(event, context):
     for rule in RULES:
         app_name = rule.get("application")
         data = get_data(context,
-                         app_name,
-                         rule.get('rule'),
-                         start,
-                         end)
+                        app_name,
+                        rule.get('rule'),
+                        start,
+                        end)
         datasets.append({
             'application_name': app_name,
             'children': data
         })
+
     table = render(datasets)
     return {
         "html": table
