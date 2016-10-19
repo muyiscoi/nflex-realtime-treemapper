@@ -45,7 +45,8 @@ def get_resources_for_application(context, name):
         "metadata_queries": [],
         "attributes": [
             "id",
-            "base.name"
+            "base.name",
+            "details.server.cpu_cores",
         ],
         "group_by_attributes": [],
         "aggregations": []
