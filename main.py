@@ -24,7 +24,7 @@ RULES = [
         "rule": {
             "type": "threshold",
             "metric": "memory-usage",
-            "value": 50,
+            "value": 10,
             "child_metric": "docker-memory-usage.*",
         }
     },
