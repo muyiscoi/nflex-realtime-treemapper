@@ -1,8 +1,18 @@
-import jinja2
+import jinja2, re
 from jinja2 import Template
 
 def get_color(value, max=100, alpha=1.0):
     return "hsla({},50%,50%,{})".format((1 - value/max) * 120, alpha)
+
+def strip_container_name(name):
+    p = re.compile('Docker .+ usage \[(.+)\]')
+    m = p.search(name)
+    if m != None:
+        result = m.group(1)
+    else:
+        result = name
+    print 'strip_container_name %s %s' % (name, result)
+    return result
 
 """Render stuff"""
 def render_block(data):
@@ -21,7 +31,7 @@ def render_block(data):
                         <div class="application__children">
                             {% for child in item['children'] %}
                                 <div class="application__item-child"  style="background-color: {{get_color(child.value, child.max_value, 1.0)}}">
-                                    <div class="application__item-child-name">{{child.label}}</div>
+                                    <div class="application__item-child-name">{{strip_container_name(child.label)}}</div>
                                     <span class="stats">{{child.value}}%</span>
                                 </div>
                             {% endfor%}
@@ -40,6 +50,7 @@ def render_block(data):
 e = jinja2.Environment()
 e.globals['get_color'] = get_color
 e.globals['render_block'] = render_block
+e.globals['strip_container_name'] = strip_container_name
 
 def render_style():
     template_str = """
