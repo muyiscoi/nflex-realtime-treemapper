@@ -35,7 +35,7 @@ def get_data(context, app_name, rule, start, end):
     resource_ids = [r['id'] for r in resources]
     resource_names = {r['id']: r['base']['name'] for r in resources}
     resource_cores = {r['id']: r['details']['server']['cpu_cores']
-                      for r in resources}
+                      for r in resources if "server" in r["details"]}
     current = get_current_metrics(context,
                                   resource_ids,
                                   rule['metric'])
