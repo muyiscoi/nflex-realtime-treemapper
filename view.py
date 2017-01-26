@@ -16,6 +16,8 @@ def strip_container_name(name):
 
 """Render stuff"""
 def render_block(data):
+    if len(data["children"]) == 0: return ""
+    
     template_str = """
     <div class="application clearfix">
         <div class="application__header">
@@ -44,17 +46,6 @@ def render_block(data):
     </div>
     """
     
-    if len(data["children"]) == 0:
-        template_str = """
-        <div class="application clearfix">
-            <div class="application__header">
-                <span class="title">{{data.application_name}}</span>
-            </div>
-            <div class="application__body">
-                <center><img src="http://creator.keepcalmandcarryon.com/kcp-preview/NQOxtJXW" /></center>
-            </div>
-        </div>
-        """
 
     template = e.from_string(template_str);
     return template.render(data=data);
@@ -127,15 +118,24 @@ def render_style():
 
 
 def render(datasets):
-    template_str = """
-    {% for data in datasets %}
-    <div class="metric_block">
-        {{ render_block(data) }}
-    </div>
-    {% endfor %}
-    """
-    template = e.from_string(template_str);
-    return render_style() + template.render(datasets=datasets);
+    data_template = e.from_string("""
+                <div class="metric_block">
+                    {{ render_block(data) }}
+                </div>
+            """)
+    
+    html = ""
+    for data in datasets:
+        if len(data["children"]) != 0:
+            html = html + data_template.render(data=data)
+    if html == "":
+        html = """
+        <div class="metric_block>
+            <center><img src="http://creator.keepcalmandcarryon.com/kcp-preview/NQOxtJXW" /></center>
+        </div>
+        """
+
+    return render_style() + html;
 
 
 def test_render():
