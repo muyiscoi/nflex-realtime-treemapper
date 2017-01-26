@@ -45,7 +45,7 @@ def render_block(data):
     """
     
     if len(data["children"]) == 0:
-        return """
+        template_str = """
         <div class="application clearfix">
             <div class="application__header">
                 <span class="title">{{data.application_name}}</span>
