@@ -28,14 +28,8 @@ RULES = [
 ]
 
 
-def get_data(context, app_name, rule, start, end):
-    name = re.sub(r'([()])', r'\\\1', app_name)
-    resources = get_resources_for_application(context, name)
+def get_data(context, app_name, resource_ids, resource_names, resource_cores, rule, start, end):
     data = {}
-    resource_ids = [r['id'] for r in resources]
-    resource_names = {r['id']: r['base']['name'] for r in resources}
-    resource_cores = {r['id']: r['details']['server']['cpu_cores']
-                      for r in resources}
     current = get_current_metrics(context,
                                   resource_ids,
                                   rule['metric'])
@@ -82,11 +76,20 @@ def get(event, context):
     end = datetime.utcnow()
     start = end - timedelta(minutes=10)
     datasets = []
+    name = re.sub(r'([()])', r'\\\1', app_name)
+    resources = get_resources_for_application(context, name)
+    resource_ids = [r['id'] for r in resources]
+    resource_names = {r['id']: r['base']['name'] for r in resources}
+    resource_cores = {r['id']: r['details']['server']['cpu_cores']
+                      for r in resources}
     for rule in RULES:
         region = event.get("region", "Core")
         appname = "CMP (%s)" % region
         data = get_data(context,
                         appname,
+                        resource_ids,
+                        resource_names,
+                        resource_cores,
                         rule,
                         start,
                         end)
