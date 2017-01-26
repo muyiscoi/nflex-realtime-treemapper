@@ -21,7 +21,7 @@ RULES = [
         "type": "threshold",
         "metric": "memory-usage",
         "value": 10,
-        "max_value": 100,
+        "max_value":.get('rule') 100,
         "child_metric": "docker-memory-usage.*",
         "child_max_value": 100,
     }
@@ -87,7 +87,7 @@ def get(event, context):
         appname = "CMP (%s)" % region
         data = get_data(context,
                         appname,
-                        rule.get('rule'),
+                        rule,
                         start,
                         end)
         datasets.append({
