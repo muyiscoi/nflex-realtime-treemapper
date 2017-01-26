@@ -43,6 +43,18 @@ def render_block(data):
         </div>
     </div>
     """
+    
+    if len(data["children"]) == 0:
+        return """
+        <div class="application clearfix">
+            <div class="application__header">
+                <span class="title">{{data.application_name}}</span>
+            </div>
+            <div class="application__body">
+                <center><img src="http://creator.keepcalmandcarryon.com/kcp-preview/NQOxtJXW" /></center>
+            </div>
+        </div>
+        """
 
     template = e.from_string(template_str);
     return template.render(data=data);
