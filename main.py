@@ -21,7 +21,7 @@ RULES = [
         "type": "threshold",
         "metric": "memory-usage",
         "value": 10,
-        "max_value":.get('rule') 100,
+        "max_value": 100,
         "child_metric": "docker-memory-usage.*",
         "child_max_value": 100,
     }
