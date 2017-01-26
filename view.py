@@ -5,7 +5,7 @@ def get_color(value, max=100, alpha=1.0):
     return "hsla({},50%,50%,{})".format((1 - value/max) * 120, alpha)
 
 def strip_container_name(name):
-    p = re.compile('Docker .+ usage (.+)')
+    p = re.compile('(?:Docker CPU usage CPU #|Docker memory usage \[)(.+)\]?')
     m = p.search(name)
     if m != None:
         result = m.group(1)
