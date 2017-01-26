@@ -13,14 +13,14 @@ RULES = [
     {
         "type": "threshold",
         "metric": "cpu-usage",
-        "value": 10,
+        "value": 45,
         "max_value": 100,
         "child_metric": "docker-cpu-usage.*",
    },
    {
         "type": "threshold",
         "metric": "memory-usage",
-        "value": 10,
+        "value": 45,
         "max_value": 100,
         "child_metric": "docker-memory-usage.*",
         "child_max_value": 100,
