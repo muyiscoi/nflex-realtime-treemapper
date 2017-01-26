@@ -11,26 +11,20 @@ from view import render
 
 RULES = [
     {
-        "application": "CMP (Core)",
-        "rule": {
-            "type": "threshold",
-            "metric": "cpu-usage",
-            "value": 10,
-            "max_value": 100,
-            "child_metric": "docker-cpu-usage.*",
-        }
-    },
-    {
-        "application": "CMP (Core)",
-        "rule": {
-            "type": "threshold",
-            "metric": "memory-usage",
-            "value": 10,
-            "max_value": 100,
-            "child_metric": "docker-memory-usage.*",
-            "child_max_value": 100,
-        }
-    },
+        "type": "threshold",
+        "metric": "cpu-usage",
+        "value": 10,
+        "max_value": 100,
+        "child_metric": "docker-cpu-usage.*",
+   },
+   {
+        "type": "threshold",
+        "metric": "memory-usage",
+        "value": 10,
+        "max_value": 100,
+        "child_metric": "docker-memory-usage.*",
+        "child_max_value": 100,
+    }
 ]
 
 
@@ -89,14 +83,15 @@ def get(event, context):
     start = end - timedelta(minutes=10)
     datasets = []
     for rule in RULES:
-        app_name = rule.get("application")
+        region = event.get("region", "Core")
+        appname = "CMP (%s)" % region
         data = get_data(context,
-                        app_name,
+                        appname,
                         rule.get('rule'),
                         start,
                         end)
         datasets.append({
-            'application_name': app_name,
+            'application_name': appname,
             'children': data
         })
 
