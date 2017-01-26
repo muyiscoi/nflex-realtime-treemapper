@@ -135,7 +135,7 @@ def render(datasets):
         <div class="metric_block>
             <div class="application clearfix">
                 <div class="application__body">
-                    <center><img src="http://capmel.com/wp-content/uploads/2016/12/yoda-300x240.jpg" /></center>
+                    <center><img src="http://clipart-finder.com/data/mini/kuba_icon_ok.png" /></center>
                 </div>
             </div>
         </div>
