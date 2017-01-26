@@ -2,6 +2,8 @@ import jinja2, re
 from jinja2 import Template
 
 def get_color(value, max=100, alpha=1.0):
+    if value > 2*max:
+        value = 2*max
     return "hsla({},50%,50%,{})".format((1 - value/max) * 120, alpha)
 
 def strip_container_name(name):
