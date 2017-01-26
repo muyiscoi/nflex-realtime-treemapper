@@ -38,10 +38,12 @@ def get_resources_for_application(context, name):
     url = '/query'
     json = {
         "queries": [{
-                "key": "connections.applications.name",
-                "values": [name],
-            }
-        ],
+            "key": "connections.applications.name",
+            "values": [name],
+        }, {
+            "key": "type",
+            "values": ["server"],
+        }],
         "metadata_queries": [],
         "attributes": [
             "id",
