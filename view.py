@@ -131,7 +131,11 @@ def render(datasets):
     if html == "":
         html = """
         <div class="metric_block>
-            <center><img src="http://creator.keepcalmandcarryon.com/kcp-preview/NQOxtJXW" /></center>
+            <div class="application clearfix">
+                <div class="application__body">
+                    <center><img src="http://creator.keepcalmandcarryon.com/kcp-preview/NQOxtJXW" /></center>
+                </div>
+            </div>
         </div>
         """
 
