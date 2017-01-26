@@ -44,6 +44,7 @@ def get_data(context, app_name, resource_ids, resource_names, resource_cores, ru
             'max_value': rule['max_value'],
         }
         if point['value'] > rule['value']:
+            print resource_names[resource_id]
             child_metrics = get_metrics(context,
                                         resource_id,
                                         rule['child_metric'],
